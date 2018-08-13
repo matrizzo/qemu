@@ -4135,6 +4135,12 @@ static inline uint32_t ldl_phys_internal(target_phys_addr_t addr,
         ptr = qemu_get_ram_ptr((memory_region_get_ram_addr(section->mr)
                                 & TARGET_PAGE_MASK)
                                + section_addr(section, addr));
+
+        if (kvm_enabled()) {
+            kvm_mem_rw(&val, (void *)ptr, sizeof(uint32_t), 0);
+            return val;
+        }
+
         switch (endian) {
         case DEVICE_LITTLE_ENDIAN:
             val = ldl_le_p(ptr);
@@ -4193,6 +4199,12 @@ static inline uint64_t ldq_phys_internal(target_phys_addr_t addr,
         ptr = qemu_get_ram_ptr((memory_region_get_ram_addr(section->mr)
                                 & TARGET_PAGE_MASK)
                                + section_addr(section, addr));
+
+        if (kvm_enabled()) {
+            kvm_mem_rw(&val, (void *)ptr, sizeof(uint64_t), 0);
+            return val;
+        }
+
         switch (endian) {
         case DEVICE_LITTLE_ENDIAN:
             val = ldq_le_p(ptr);

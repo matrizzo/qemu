@@ -45,7 +45,15 @@
 static inline int target_memory_rw_debug(CPUArchState *env, target_ulong addr,
                                          uint8_t *buf, int len, int is_write)
 {
-    return cpu_memory_rw_debug(env, addr, buf, len, is_write);
+    // if (kvm_enabled()) {
+    //     if (is_write) {
+    //         return kvm_mem_rw((void *)(uintptr_t)addr, buf, len, is_write);
+    //     } else {
+    //         return kvm_mem_rw(buf, (void *)(uintptr_t)addr, len, is_write);
+    //     }
+    // } else {
+        return cpu_memory_rw_debug(env, addr, buf, len, is_write);
+    // }
 }
 #else
 /* target_memory_rw_debug() defined in cpu.h */
